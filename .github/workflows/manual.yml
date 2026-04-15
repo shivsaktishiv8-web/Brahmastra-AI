@@ -15,20 +15,16 @@ jobs:
         run: |
           pip3 install --user --upgrade buildozer cython==0.29.36 virtualenv
 
-      - name: Build with Buildozer
+            - name: Build with Buildozer
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # 3 baar retry logic taaki 404 error na aaye
-          for i in {1..3}; do
-            yes | buildozer android debug && break || sleep 20
-          done
-          
-          # APK Discovery: APK dhoond kar bahar lana
-          find . -name "*.apk" -exec cp {} ./brahmastra_final.apk \;
+          yes | buildozer android debug
         continue-on-error: false
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Brahmastra-Final-App
-          path: brahmastra_final.apk
+          # Seedha bin folder se uthao, bhatkne ki zarurat nahi
+          path: bin/*.apk
+

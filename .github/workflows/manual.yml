@@ -1,32 +1,24 @@
-name: Build Brahmastra APK
-on: push
+name: Brahmastra_Fast_Build
+on: [push, workflow_dispatch]
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install Dependencies
+      - name: Setup
         run: |
           sudo apt update
-          sudo apt install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libssl-dev libjpeg-dev zlib1g-dev libffi8 liblzma-dev uuid-dev openjdk-17-jdk
-
-      - name: Setup Buildozer
-        run: |
+          sudo apt install -y python3-pip build-essential git openjdk-17-jdk
           pip3 install --user --upgrade buildozer cython==0.29.36 virtualenv
-
-      - name: Generate APK
+      - name: Build
         run: |
           export PATH=$PATH:$HOME/.local/bin
-          # Force build with retry
-          yes | buildozer android debug || yes | buildozer android debug
-          
-          # Find APK and bring it to root
-          find . -name "*.apk" -exec cp {} ./brahmastra_final.apk \;
-        continue-on-error: false
-
-      - name: Upload Final APK
+          # Seedha build, koi extra command nahi
+          yes | buildozer android debug
+          find . -name "*.apk" -exec cp {} ./brahmastra.apk \;
+      - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: Brahmastra-V1-Installer
-          path: brahmastra_final.apk
+          name: Brahmastra-Light
+          path: brahmastra.apk
+

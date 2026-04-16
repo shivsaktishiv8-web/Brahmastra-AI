@@ -1,16 +1,12 @@
 [app]
 title = Brahmastra
-package.name = brahmastra
-package.domain = org.panini
+package.name = b1
+package.domain = org.test
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts = py
 version = 0.1
-requirements = python3,kivy,android,requests,certifi
+requirements = python3,kivy
 orientation = portrait
-android.permissions = INTERNET, ACCESS_FINE_LOCATION, CAMERA, RECORD_AUDIO, WRITE_EXTERNAL_STORAGE
-android.api = 31
-android.minapi = 21
-android.sdk = 33
-android.ndk = 25b
+android.archs = arm64-v8a
 android.accept_sdk_license = True
-android.archs = arm64-v8a, armeabi-v7a
+

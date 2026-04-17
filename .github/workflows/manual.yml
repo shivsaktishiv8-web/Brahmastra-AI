@@ -1,24 +1,38 @@
-name: Brahmastra_Fast_Build
-on: [push, workflow_dispatch]
+name: Brahmastra Build APK
+
+on:
+  workflow_dispatch: # Isse aap manually button daba kar build shuru kar sakte hain
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04 # Latest stable runner
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11' # Stable version for Buildozer
+
+      - name: Install Dependencies
         run: |
-          sudo apt update
-          sudo apt install -y python3-pip build-essential git openjdk-17-jdk
-          pip3 install --user --upgrade buildozer cython==0.29.36 virtualenv
-      - name: Build
+          sudo apt-get update
+          sudo apt-get install -y build-essential git ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev libgstreamer1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good
+          pip install --upgrade pip
+          pip install buildozer cython==0.29.33 virtualenv
+
+      - name: Build with Buildozer
         run: |
-          export PATH=$PATH:$HOME/.local/bin
-          # Seedha build, koi extra command nahi
-          yes | buildozer android debug
-          find . -name "*.apk" -exec cp {} ./brahmastra.apk \;
-      - name: Upload
+          yes y | buildozer android debug
+        env:
+          # Root permissions handle karne ke liye
+          BUILDOZER_ALLOW_ORG_NAME_AS_PACKAGE_NAME: 1
+
+      - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Brahmastra-Light
-          path: brahmastra.apk
+          name: Brahmastra-AI-Package
+          path: bin/*.apk
 
